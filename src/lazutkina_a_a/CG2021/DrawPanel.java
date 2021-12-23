@@ -10,10 +10,15 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
-import java.util.List;
 
 import lazutkina_a_a.CG2021.math.Vector2;
 import lazutkina_a_a.CG2021.model.*;
+import lazutkina_a_a.CG2021.model.factory.CreatorShapes;
+import lazutkina_a_a.CG2021.model.factory.ModelFactory;
+import lazutkina_a_a.CG2021.model.factory.OvalFactory;
+import lazutkina_a_a.CG2021.model.factory.SquareFactory;
+import lazutkina_a_a.CG2021.model.shapes.Puck;
+import lazutkina_a_a.CG2021.model.shapes.Square;
 import lazutkina_a_a.CG2021.timers.AbstractWorldTimer;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -22,10 +27,6 @@ import lazutkina_a_a.CG2021.timers.UpdateWorldTimer;
 import lazutkina_a_a.CG2021.utils2d.ScreenConverter;
 import lazutkina_a_a.CG2021.utils2d.ScreenPoint;
 
-/**
- *
- * @author Alexey
- */
 public class DrawPanel extends JPanel implements ActionListener,
         MouseListener, MouseMotionListener, MouseWheelListener {
     private ScreenConverter sc;
@@ -38,11 +39,12 @@ public class DrawPanel extends JPanel implements ActionListener,
         Field f = new Field(
                 new Rectangle(0, 10, 10, 10),
                 0.1, 9.8);
-        //w = new World(new Puck(1, 0.3, f.getRectangle().getCenter()), f);
         w = new World(f);
-        w.addObject(new Puck(1, 0.6, 0.6, f.getRectangle().getCenter()));
-        w.addObject(new Puck(1, 0.6, 0.6, new Vector2(0, 0)));
-        w.addObject(new Square(1, 0.4, 0.4, new Vector2(1, 1)));
+
+        ModelFactory ovalFactory = CreatorShapes.createModel(ModelType.OVAL);
+        w.addObject(ovalFactory.createModel(2, 0.6, 0.6,  f.getRectangle().getCenter()));
+        w.addObject(new Puck(1, 0.3, new Vector2(1, 1)));
+        w.addObject(new SquareFactory().createModel(1, 0.4, 0.4, new Vector2(1, 1)));
         sc = new ScreenConverter(f.getRectangle(), 450, 450);
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
@@ -59,8 +61,6 @@ public class DrawPanel extends JPanel implements ActionListener,
         w.draw((Graphics2D)bi.getGraphics(), sc);
         g.drawImage(bi, 0, 0, null);
     }
-
-
 
     @Override
     public void actionPerformed(ActionEvent e) {

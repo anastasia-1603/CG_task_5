@@ -5,16 +5,15 @@ import lazutkina_a_a.CG2021.utils2d.ScreenConverter;
 
 import java.awt.*;
 
-public class IModel implements IDrawer{
-    private double m, r;
+public abstract class IModel implements IDrawer{
+    private double m;
     private Vector2 position;
     private double width;
     private double height;
     private Vector2 velocity;
     private Vector2 acceleration;
 
-
-    public IModel(double m, double width, double height, Vector2 position) {
+    protected IModel(double m, double width, double height, Vector2 position) {
         this.m = m;
         this.width = width;
         this.height = height;
@@ -48,14 +47,6 @@ public class IModel implements IDrawer{
         this.position = position;
     }
 
-    public double getR() {
-        return r;
-    }
-
-    public void setR(double r) {
-        this.r = r;
-    }
-
     public Vector2 getVelocity() {
         return velocity;
     }
@@ -72,8 +63,4 @@ public class IModel implements IDrawer{
         return height;
     }
 
-    @Override
-    public void draw(Graphics2D g, ScreenConverter sc) {
-
-    }
 }

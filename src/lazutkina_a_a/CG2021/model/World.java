@@ -56,13 +56,13 @@ public class World implements IDrawer{
 
         double vx = nv.getX(), vy = nv.getY();
         boolean reset = false;
-        if (np.getX() - object.getR() < field.getRectangle().getLeft() ||
-                np.getX() + object.getR() > field.getRectangle().getRight()) {
+        if (np.getX() - object.getWidth()/2 < field.getRectangle().getLeft() ||
+                np.getX() + object.getWidth()/2 > field.getRectangle().getRight()) {
             vx = -vx;
             reset = true;
         }
-        if (np.getY() - object.getR() < field.getRectangle().getBottom() ||
-                np.getY() + object.getR() > field.getRectangle().getTop()) {
+        if (np.getY() - object.getHeight()/2 < field.getRectangle().getBottom() ||
+                np.getY() + object.getHeight()/2 > field.getRectangle().getTop()) {
             vy = -vy;
             reset = true;
         }

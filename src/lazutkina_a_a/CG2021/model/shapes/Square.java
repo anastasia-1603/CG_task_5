@@ -1,6 +1,7 @@
-package lazutkina_a_a.CG2021.model;
+package lazutkina_a_a.CG2021.model.shapes;
 
 import lazutkina_a_a.CG2021.math.Vector2;
+import lazutkina_a_a.CG2021.model.IModel;
 import lazutkina_a_a.CG2021.utils2d.ScreenConverter;
 import lazutkina_a_a.CG2021.utils2d.ScreenPoint;
 
