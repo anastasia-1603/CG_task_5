@@ -72,7 +72,7 @@ public class World implements IDrawer{
             np = object.getPosition();
 
         Vector2 Fvn = externalForce.getForceAt(np);
-        Vector2 Ftr = object.getVelocity().normolized().mul(-field.getMu()*object.getM()* field.getG());
+        Vector2 Ftr = object.getVelocity().normalized().mul(-field.getMu()*object.getM()* field.getG());
         Vector2 F = Ftr.add(Fvn);
 
         object.setAcceleration(F.mul(1/object.getM()));
@@ -80,13 +80,6 @@ public class World implements IDrawer{
         object.setPosition(np);
     }
 
-    /**
-     * Метод рисует ткущее состояние мира.
-     * На самом деле всю логику рисования стоит вынести из этого класса
-     * куда-нибудь в WroldDrawer, унаследованный от IDrawer
-     * @param g Графикс, на котором надо нарисовать текущее состояние.
-     * @param sc Актуальный конвертер координат.
-     */
     public void draw(Graphics2D g, ScreenConverter sc) {
         field.draw(g, sc);
         if (this.getObjects().size() != 0)

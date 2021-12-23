@@ -40,8 +40,8 @@ public class Puck extends Circle {
      * @param r Радиус шайбы
      * @param position Положение шайбы относительно начала координат [м]
      */
-    public Puck(double m, double r, Vector2 position) {
-        super(m, r, position);
+    public Puck(double m, double r, Vector2 position, Color color) {
+        super(m, r, position, color);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class Puck extends Circle {
         ScreenPoint pc = sc.r2s(this.getPosition());
         int rh = sc.r2sDistanceH(this.getWidth()/2);
         int rv = sc.r2sDistanceV(this.getHeight()/2);
-        g.setColor(Color.RED);
+        g.setColor(this.getColor());
         g.fillOval(pc.getI() - rh, pc.getJ() - rv, rh + rh, rv + rv);
         g.setColor(oldC);
     }

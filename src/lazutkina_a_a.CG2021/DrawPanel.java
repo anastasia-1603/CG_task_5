@@ -1,19 +1,11 @@
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 
 import math.Vector2;
 
 import model.Field;
-import model.ModelType;
 import model.World;
-import model.factory.CreatorShapes;
 import model.factory.ModelFactory;
 import model.factory.OvalFactory;
 import model.factory.SquareFactory;
@@ -27,7 +19,7 @@ import utils2d.ScreenConverter;
 import utils2d.ScreenPoint;
 
 public class DrawPanel extends JPanel implements ActionListener,
-        MouseListener, MouseMotionListener, MouseWheelListener {
+        MouseListener, MouseMotionListener, MouseWheelListener, KeyListener {
     private ScreenConverter sc;
     private World w;
     private AbstractWorldTimer uwt;
@@ -42,24 +34,22 @@ public class DrawPanel extends JPanel implements ActionListener,
                 0.1, 9.8);
         w = new World(f);
 
-        this.factory = factory;
-        /*ModelFactory ovalFactory = CreatorShapes.createModel(ModelType.OVAL);*/
-        w.addObject(factory.createModel(2, 0.6, 0.6,  f.getRectangle().getCenter()));
-        w.addObject(new Puck(1, 0.3, new Vector2(1, 1)));
-        w.addObject(new SquareFactory().createModel(1, 0.4, 0.4, new Vector2(1, 1)));
+        this.factory = new OvalFactory();
+        addObject(1, 0.6, 0.6,  f.getRectangle().getCenter(), Color.ORANGE);
         sc = new ScreenConverter(f.getRectangle(), this.getWidth(), this.getHeight());
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
         this.addMouseWheelListener(this);
+        this.addKeyListener(this);
 
         (uwt = new UpdateWorldTimer(w, 10)).start();
         drawTimer = new Timer(40, this);
         drawTimer.start();
     }
 
-    public void addObject(double m, double width, double height, Vector2 position)
+    public void addObject(double m, double width, double height, Vector2 position, Color color)
     {
-        w.addObject(factory.createModel(m, width, height, position));
+        w.addObject(factory.createModel(m, width, height, position, color));
     }
 
     public ModelFactory getFactory() {
@@ -70,6 +60,15 @@ public class DrawPanel extends JPanel implements ActionListener,
         this.factory = factory;
     }
 
+    public void setG(double g)
+    {
+        this.w.getField().setG(g);
+    }
+
+    public void setMu(double mu)
+    {
+        this.w.getField().setMu(mu);
+    }
 
     @Override
     public void setSize(int width, int height) {
@@ -136,16 +135,7 @@ public class DrawPanel extends JPanel implements ActionListener,
     private static final double SCALE_STEP = 0.1;
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
-       /* double oldMu = w.getField().getMu();
-        oldMu = Math.round(oldMu*100 + e.getWheelRotation())*0.01;
 
-        if (oldMu < -1)
-            oldMu = -1;
-        else if (oldMu > 1)
-            oldMu = 1;
-        else if (Math.abs(oldMu) < 0.005)
-            oldMu = 0;
-        w.getField().setMu(oldMu);*/
         int clicks = e.getWheelRotation();
         double scale = 1;
         double coef = 1 + SCALE_STEP * (clicks < 0 ? -1 : 1);
@@ -156,4 +146,29 @@ public class DrawPanel extends JPanel implements ActionListener,
         sc.changeScale(scale);
     }
 
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_PAGE_DOWN)
+        {
+            int direction = 1;
+            w.getExternalForce().setValue(10*direction);
+            w.getExternalForce().setLocation(
+                    sc.s2r(new ScreenPoint(this.getWidth()/2, this.getHeight())));
+        }
+
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_PAGE_DOWN)
+        {
+            w.getExternalForce().setValue(0);
+        }
+
+    }
 }

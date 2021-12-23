@@ -9,8 +9,8 @@ import java.awt.*;
 
 public class Oval extends IModel {
 
-    public Oval(double m, double width, double height, Vector2 position) {
-        super(m, width, height, position);
+    public Oval(double m, double width, double height, Vector2 position, Color color) {
+        super(m, width, height, position, color);
     }
 
     @Override
@@ -19,7 +19,7 @@ public class Oval extends IModel {
         ScreenPoint pc = sc.r2s(this.getPosition());
         int rh = sc.r2sDistanceH(this.getWidth()/2);
         int rv = sc.r2sDistanceV(this.getHeight()/2);
-        g.setColor(Color.RED);
+        g.setColor(this.getColor());
         g.fillOval(pc.getI() - rh, pc.getJ() - rv, rh + rh, rv + rv);
         g.setColor(oldC);
     }

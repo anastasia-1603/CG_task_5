@@ -54,7 +54,7 @@ public class Vector2 {
      * Если вектор нулевой, то возвращает новый нулевой вектор
      * @return Получившийся вектор
      */
-    public Vector2 normolized() {
+    public Vector2 normalized() {
         double len = length();
         if (len < 1e-12) /*Да, здесь не по модулю, т.к. корень не будет отрицательным.*/
             return new Vector2(0, 0);

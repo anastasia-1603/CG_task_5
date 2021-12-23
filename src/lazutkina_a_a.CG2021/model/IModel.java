@@ -2,6 +2,9 @@ package model;
 
 import math.Vector2;
 
+import java.awt.*;
+import java.util.Calendar;
+
 public abstract class IModel implements IDrawer{
     private double m;
     private Vector2 position;
@@ -9,12 +12,14 @@ public abstract class IModel implements IDrawer{
     private double height;
     private Vector2 velocity;
     private Vector2 acceleration;
+    private Color color;
 
-    protected IModel(double m, double width, double height, Vector2 position) {
+    protected IModel(double m, double width, double height, Vector2 position, Color color) {
         this.m = m;
         this.width = width;
         this.height = height;
         this.position = position;
+        this.color = color;
 
         this.velocity = new Vector2(0, 0);
         this.acceleration = new Vector2(0, 0);
@@ -46,6 +51,14 @@ public abstract class IModel implements IDrawer{
 
     public Vector2 getVelocity() {
         return velocity;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
     }
 
     public void setVelocity(Vector2 velocity) {

@@ -64,7 +64,7 @@ public class Field implements IDrawer{
         int h = sc.r2sDistanceV(this.getRectangle().getHeight());
         g.setColor(Color.WHITE);
         g.fillRect(tl.getI(), tl.getJ(), w, h);
-        g.setColor(Color.RED);
+        g.setColor(Color.BLACK);
         g.drawRect(tl.getI(), tl.getJ(), w, h);
     }
 }
