@@ -13,14 +13,11 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 
 import lazutkina_a_a.CG2021.math.Vector2;
-import lazutkina_a_a.CG2021.model.IModel;
+import lazutkina_a_a.CG2021.model.*;
 import lazutkina_a_a.CG2021.timers.AbstractWorldTimer;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 import lazutkina_a_a.CG2021.math.Rectangle;
-import lazutkina_a_a.CG2021.model.Field;
-import lazutkina_a_a.CG2021.model.Puck;
-import lazutkina_a_a.CG2021.model.World;
 import lazutkina_a_a.CG2021.timers.UpdateWorldTimer;
 import lazutkina_a_a.CG2021.utils2d.ScreenConverter;
 import lazutkina_a_a.CG2021.utils2d.ScreenPoint;
@@ -45,6 +42,7 @@ public class DrawPanel extends JPanel implements ActionListener,
         w = new World(f);
         w.addObject(new Puck(1, 0.6, 0.6, f.getRectangle().getCenter()));
         w.addObject(new Puck(1, 0.6, 0.6, new Vector2(0, 0)));
+        w.addObject(new Square(1, 0.4, 0.4, new Vector2(1, 1)));
         sc = new ScreenConverter(f.getRectangle(), 450, 450);
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
@@ -109,9 +107,10 @@ public class DrawPanel extends JPanel implements ActionListener,
         w.getExternalForce().setLocation(sc.s2r(new ScreenPoint(e.getX(), e.getY())));
     }
 
+    private static final double SCALE_STEP = 0.1;
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
-        double oldMu = w.getField().getMu();
+       /* double oldMu = w.getField().getMu();
         oldMu = Math.round(oldMu*100 + e.getWheelRotation())*0.01;
 
         if (oldMu < -1)
@@ -120,7 +119,15 @@ public class DrawPanel extends JPanel implements ActionListener,
             oldMu = 1;
         else if (Math.abs(oldMu) < 0.005)
             oldMu = 0;
-        w.getField().setMu(oldMu);
+        w.getField().setMu(oldMu);*/
+        int clicks = e.getWheelRotation();
+        double scale = 1;
+        double coef = 1 + SCALE_STEP * (clicks < 0 ? -1 : 1);
+        for (int i = Math.abs(clicks); i > 0; i--) {
+            scale *= coef;
+        }
+
+        sc.changeScale(scale);
     }
 
 }

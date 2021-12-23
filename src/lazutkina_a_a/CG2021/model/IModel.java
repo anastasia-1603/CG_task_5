@@ -5,13 +5,24 @@ import lazutkina_a_a.CG2021.utils2d.ScreenConverter;
 
 import java.awt.*;
 
-public abstract class IModel implements IDrawer{
-    double m, r;
-    Vector2 position;
+public class IModel implements IDrawer{
+    private double m, r;
+    private Vector2 position;
     private double width;
     private double height;
-    Vector2 velocity;
-    Vector2 acceleration;
+    private Vector2 velocity;
+    private Vector2 acceleration;
+
+
+    public IModel(double m, double width, double height, Vector2 position) {
+        this.m = m;
+        this.width = width;
+        this.height = height;
+        this.position = position;
+
+        this.velocity = new Vector2(0, 0);
+        this.acceleration = new Vector2(0, 0);
+    }
 
     public Vector2 getAcceleration() {
         return acceleration;

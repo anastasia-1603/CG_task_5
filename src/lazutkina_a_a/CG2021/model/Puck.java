@@ -24,13 +24,20 @@ public class Puck extends IModel  {
     private Vector2 velocity;
     private Vector2 acceleration;
 
-    /**
+    /*public Puck(double m, double width, double height, Vector2 position) {
+        super(m, width, height, position);
+
+        this.velocity = new Vector2(0, 0);
+        this.acceleration = new Vector2(0, 0);
+    }*/
+
+    /*/**
      * Создаём шайбу с нулевой скоростью и ускорением
      * @param m Масса шайбы [кг]
      * @param r Радиус шайбы [м]
      * @param position Положение шайбы относительно начала координат [м]
      */
-    public Puck(double m, double r, Vector2 position) {
+     /*public Puck(double m, double r, Vector2 position) {
         this.m = m;
         this.r = r;
         this.width = 2 * r;
@@ -38,9 +45,12 @@ public class Puck extends IModel  {
         this.position = position;
         this.velocity = new Vector2(0, 0);
         this.acceleration = new Vector2(0, 0);
-    }
+    }*/
+
+
 
     public Puck(double m, double width, double height, Vector2 position) {
+        super(m, width, height, position);
         this.m = m;
         this.width = width;
         this.height = height;
@@ -49,6 +59,10 @@ public class Puck extends IModel  {
         this.velocity = new Vector2(0, 0);
         this.acceleration = new Vector2(0, 0);
     }
+
+    /*public Puck() {
+        super(1, 0.6, 0.6, new Vector2(5, 5));
+    }*/
 
     public Vector2 getAcceleration() {
         return acceleration;

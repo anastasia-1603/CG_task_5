@@ -18,18 +18,11 @@ import java.util.List;
  * Класс, описывающий весь мир, в целом.
  * @author Alexey
  */
-public class World {
+public class World implements IDrawer{
 
     private List<IModel> objects;
-    private Puck p;
     private Field field;
     private ForceSource externalForce;
-
-    public World(Puck p, Field field) {
-        this.p = p;
-        this.field = field;
-        this.externalForce = new ForceSource(field.getRectangle().getCenter());
-    }
 
     public World(List<IModel> objects, Field field) {
         this.objects = objects;
@@ -44,12 +37,16 @@ public class World {
     }
 
     public void updateAll(double dt){
-        for(IModel obj : objects)
+        for (IModel obj : objects)
         {
             update(dt, obj);
         }
     }
 
+    /**
+     * Метод обновления состояния модели в мире за указанное время
+     * @param dt Промежуток времени, за который требуется обновить модель.
+     */
     public void update(double dt, IModel object) {
         Vector2 np = object.getPosition()
                 .add(object.getVelocity().mul(dt))
@@ -82,42 +79,6 @@ public class World {
         object.setAcceleration(F.mul(1/object.getM()));
         object.setVelocity(nv);
         object.setPosition(np);
-    }
-
-    /**
-     * Метод обновления состояния мира за указанное время
-     * @param dt Промежуток времени, за который требуется обновить мир.
-     */
-    public void update(double dt) {
-        Vector2 np = p.getPosition()
-                .add(p.getVelocity().mul(dt))
-                .add(p.getAcceleration().mul(dt*dt*0.5));
-        Vector2 nv = p.getVelocity()
-                .add(p.getAcceleration().mul(dt));
-
-        double vx = nv.getX(), vy = nv.getY();
-        boolean reset = false;
-        if (np.getX() - p.getR() < field.getRectangle().getLeft() || np.getX() + p.getR() > field.getRectangle().getRight()) {
-            vx = -vx;
-            reset = true;
-        }
-        if (np.getY() - p.getR() < field.getRectangle().getBottom() || np.getY() + p.getR() > field.getRectangle().getTop()) {
-            vy = -vy;
-            reset = true;
-        }
-        nv = new Vector2(vx, vy);
-        if (nv.length() < 1e-10)
-            nv = new Vector2(0, 0);
-        if (reset)
-            np = p.getPosition();
-
-        Vector2 Fvn = externalForce.getForceAt(np);
-        Vector2 Ftr = p.getVelocity().normolized().mul(-field.getMu()*p.getM()* field.getG());
-        Vector2 F = Ftr.add(Fvn);
-
-        p.setAcceleration(F.mul(1/p.getM()));
-        p.setVelocity(nv);
-        p.setPosition(np);
     }
 
     /**
@@ -167,17 +128,7 @@ public class World {
         this.field = field;
     }
 
-    public Puck getP() {
-        return p;
-    }
-
-    public void setP(Puck p) {
-        this.p = p;
-    }
-
     public ForceSource getExternalForce() {
         return externalForce;
     }
-
-
 }

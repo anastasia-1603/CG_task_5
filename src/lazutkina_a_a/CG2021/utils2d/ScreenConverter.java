@@ -81,6 +81,12 @@ public class ScreenConverter {
         return r2s(new Vector2(0, 0)).getJ() - r2s(new Vector2(0, d)).getJ();
     }
 
+    public void changeScale(double scale)
+    {
+        wr *= scale;
+        hr *= scale;
+    }
+
     public double getHr() {
         return hr;
     }
