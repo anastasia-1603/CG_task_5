@@ -19,13 +19,16 @@ public class MainForm extends JDialog implements KeyListener {
     private JTextField widthField;
     private JTextField heightField;
     private JTextField weightField;
-    private JTextField gravityField;
-    private JTextField frictionField;
+    private JTextField xField;
+    private JTextField yField;
     private JButton buttonCreate;
     private JComboBox<ModelType> comboBox1;
     private JButton chooseColorButton;
     private JButton buttonApply;
     private JButton loadImageButton;
+    private JLabel fileStatusLabel;
+    private JLabel xLabel;
+    private JLabel yLabel;
     private Color color;
     private JFileChooser fileChooser;
     private File image = null;
@@ -40,17 +43,24 @@ public class MainForm extends JDialog implements KeyListener {
         comboBox1.addItem(ModelType.SQUARE);
         comboBox1.addItem(ModelType.IMAGE);
         color = Color.BLACK;
+        fileStatusLabel.setForeground(Color.RED);
+        fileStatusLabel.setText("no file selected");
         buttonCreate.addActionListener(e -> {
             setFactory((ModelType) Objects.requireNonNull(comboBox1.getSelectedItem()));
-            ((DrawPanel) drawPanel).addObject(
-                    Double.parseDouble(weightField.getText()),
-                    Double.parseDouble(widthField.getText()),
-                    Double.parseDouble(heightField.getText()),
-                    new Vector2(5, 5), color, image);
-            buttonCreate.setFocusable(false);
+            if (comboBox1.getSelectedItem() != ModelType.IMAGE || image != null) {
+                ((DrawPanel) drawPanel).addObject(
+                        Double.parseDouble(weightField.getText()),
+                        Double.parseDouble(widthField.getText()),
+                        Double.parseDouble(heightField.getText()),
+                        new Vector2(Double.parseDouble(xField.getText()),
+                                Double.parseDouble(yField.getText())),
+                        color, image);
+            }
+
             widthField.setFocusable(false);
             heightField.setFocusable(false);
             weightField.setFocusable(false);
+            buttonCreate.setFocusable(false);
             this.setFocusable(true);
 
         });
@@ -64,14 +74,14 @@ public class MainForm extends JDialog implements KeyListener {
             this.setFocusable(true);
         });
 
-        buttonApply.addActionListener(e -> {
-            ((DrawPanel) drawPanel).setG(Double.parseDouble(gravityField.getText()));
-            ((DrawPanel) drawPanel).setMu(Double.parseDouble(frictionField.getText()));
+        /*buttonApply.addActionListener(e -> {
+            ((DrawPanel) drawPanel).setG(Double.parseDouble(xField.getText()));
+            ((DrawPanel) drawPanel).setMu(Double.parseDouble(yField.getText()));
 
             buttonApply.setFocusable(false);
             this.setFocusable(true);
 
-        });
+        });*/
 
 
         fileChooser = new JFileChooser();
@@ -81,11 +91,20 @@ public class MainForm extends JDialog implements KeyListener {
 
         fileChooser.setFileFilter(filter);
         loadImageButton.addActionListener(e -> {
+            comboBox1.setSelectedItem(ModelType.IMAGE);
             fileChooser.setDialogTitle("Select image");
             int result = fileChooser.showOpenDialog(MainForm.this);
 
             if (result == JFileChooser.APPROVE_OPTION) {
                 image = fileChooser.getSelectedFile();
+                fileStatusLabel.setForeground(Color.BLUE);
+                fileStatusLabel.setText(image.getName());
+            } else {
+                if (image == null) {
+                    fileStatusLabel.setForeground(Color.RED);
+                    fileStatusLabel.setText("no file selected");
+                }
+
             }
             loadImageButton.setFocusable(false);
             this.setFocusable(true);
@@ -152,18 +171,18 @@ public class MainForm extends JDialog implements KeyListener {
         weightField = new JTextField();
         weightField.setText("1");
         panelButtons.add(weightField, new com.intellij.uiDesigner.core.GridConstraints(3, 5, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        frictionField = new JTextField();
-        frictionField.setText("0.1");
-        panelButtons.add(frictionField, new com.intellij.uiDesigner.core.GridConstraints(2, 7, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        yField = new JTextField();
+        yField.setText("5");
+        panelButtons.add(yField, new com.intellij.uiDesigner.core.GridConstraints(2, 7, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         final JLabel label1 = new JLabel();
         label1.setText("Height");
         panelButtons.add(label1, new com.intellij.uiDesigner.core.GridConstraints(2, 4, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JLabel label2 = new JLabel();
         label2.setText("Weight");
         panelButtons.add(label2, new com.intellij.uiDesigner.core.GridConstraints(3, 4, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JLabel label3 = new JLabel();
-        label3.setText("friction");
-        panelButtons.add(label3, new com.intellij.uiDesigner.core.GridConstraints(2, 6, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        yLabel = new JLabel();
+        yLabel.setText("Y");
+        panelButtons.add(yLabel, new com.intellij.uiDesigner.core.GridConstraints(2, 6, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         buttonApply = new JButton();
         buttonApply.setText("Apply");
         panelButtons.add(buttonApply, new com.intellij.uiDesigner.core.GridConstraints(3, 6, 1, 2, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
@@ -180,21 +199,21 @@ public class MainForm extends JDialog implements KeyListener {
         buttonCreate = new JButton();
         buttonCreate.setText("Create");
         panelButtons.add(buttonCreate, new com.intellij.uiDesigner.core.GridConstraints(4, 0, 1, 8, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JLabel label4 = new JLabel();
-        label4.setText("Label");
-        panelButtons.add(label4, new com.intellij.uiDesigner.core.GridConstraints(1, 0, 1, 4, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JLabel label5 = new JLabel();
-        label5.setText("Width");
-        panelButtons.add(label5, new com.intellij.uiDesigner.core.GridConstraints(1, 4, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        fileStatusLabel = new JLabel();
+        fileStatusLabel.setText("Label");
+        panelButtons.add(fileStatusLabel, new com.intellij.uiDesigner.core.GridConstraints(1, 0, 1, 4, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label3 = new JLabel();
+        label3.setText("Width");
+        panelButtons.add(label3, new com.intellij.uiDesigner.core.GridConstraints(1, 4, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         widthField = new JTextField();
         widthField.setText("1");
         panelButtons.add(widthField, new com.intellij.uiDesigner.core.GridConstraints(1, 5, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        final JLabel label6 = new JLabel();
-        label6.setText("g");
-        panelButtons.add(label6, new com.intellij.uiDesigner.core.GridConstraints(1, 6, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        gravityField = new JTextField();
-        gravityField.setText("9.8");
-        panelButtons.add(gravityField, new com.intellij.uiDesigner.core.GridConstraints(1, 7, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        xLabel = new JLabel();
+        xLabel.setText("X");
+        panelButtons.add(xLabel, new com.intellij.uiDesigner.core.GridConstraints(1, 6, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        xField = new JTextField();
+        xField.setText("5");
+        panelButtons.add(xField, new com.intellij.uiDesigner.core.GridConstraints(1, 7, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         panel1.add(drawPanel, new com.intellij.uiDesigner.core.GridConstraints(3, 1, 1, 4, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_BOTH, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, new Dimension(400, 400), new Dimension(900, 500), new Dimension(600, 600), 0, false));
         final com.intellij.uiDesigner.core.Spacer spacer1 = new com.intellij.uiDesigner.core.Spacer();
         panel1.add(spacer1, new com.intellij.uiDesigner.core.GridConstraints(3, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_VERTICAL, 1, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));

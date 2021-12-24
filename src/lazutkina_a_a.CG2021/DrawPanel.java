@@ -10,14 +10,12 @@ import model.IModel;
 import model.World;
 import model.factory.ModelFactory;
 import model.factory.OvalFactory;
-import model.factory.SquareFactory;
 import timers.AbstractWorldTimer;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 import math.Rectangle;
 import timers.UpdateWorldTimer;
 import utils2d.ScreenConverter;
-import utils2d.ScreenPoint;
 
 public class DrawPanel extends JPanel implements ActionListener,
         MouseListener, MouseMotionListener, MouseWheelListener, KeyListener {
@@ -27,7 +25,6 @@ public class DrawPanel extends JPanel implements ActionListener,
     private Timer drawTimer;
     private ModelFactory factory;
 
-    private static final double DIR_STEP = 0.01;
 
 
     public DrawPanel() {
@@ -154,12 +151,14 @@ public class DrawPanel extends JPanel implements ActionListener,
         sc.changeScale(scale);
     }
 
+    private static final double STEP = 0.01;
+
     public void animate(IModel object) {
 
-        if (isLeft) object.setPosition(object.getPosition().add(new Vector2(-DIR_STEP, 0)));
-        if (isRight) object.setPosition(object.getPosition().add(new Vector2(DIR_STEP, 0)));
-        if (isUp) object.setPosition(object.getPosition().add(new Vector2(0, DIR_STEP)));
-        if (isDown) object.setPosition(object.getPosition().add(new Vector2(0, -DIR_STEP)));
+        if (isLeft) object.setPosition(object.getPosition().add(new Vector2(-STEP, 0)));
+        if (isRight) object.setPosition(object.getPosition().add(new Vector2(STEP, 0)));
+        if (isUp) object.setPosition(object.getPosition().add(new Vector2(0, STEP)));
+        if (isDown) object.setPosition(object.getPosition().add(new Vector2(0, -STEP)));
         this.repaint();
     }
 
