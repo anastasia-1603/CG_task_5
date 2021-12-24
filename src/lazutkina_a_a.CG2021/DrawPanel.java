@@ -1,15 +1,16 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 
 import math.Vector2;
 
 import model.Field;
+import model.IModel;
 import model.World;
 import model.factory.ModelFactory;
 import model.factory.OvalFactory;
 import model.factory.SquareFactory;
-import model.shapes.Puck;
 import timers.AbstractWorldTimer;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -26,8 +27,10 @@ public class DrawPanel extends JPanel implements ActionListener,
     private Timer drawTimer;
     private ModelFactory factory;
 
+    private static final double DIR_STEP = 0.01;
 
-    public DrawPanel(ModelFactory factory) {
+
+    public DrawPanel() {
         super();
         Field f = new Field(
                 new Rectangle(0, 10, 10, 10),
@@ -35,7 +38,7 @@ public class DrawPanel extends JPanel implements ActionListener,
         w = new World(f);
 
         this.factory = new OvalFactory();
-        addObject(1, 0.6, 0.6,  f.getRectangle().getCenter(), Color.ORANGE);
+        addObject(1, 0.6, 0.6,  f.getRectangle().getCenter(), Color.ORANGE, null);
         sc = new ScreenConverter(f.getRectangle(), this.getWidth(), this.getHeight());
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
@@ -47,9 +50,9 @@ public class DrawPanel extends JPanel implements ActionListener,
         drawTimer.start();
     }
 
-    public void addObject(double m, double width, double height, Vector2 position, Color color)
+    public void addObject(double m, double width, double height, Vector2 position, Color color, File file)
     {
-        w.addObject(factory.createModel(m, width, height, position, color));
+        w.addObject(factory.createModel(m, width, height, position, color, file));
     }
 
     public ModelFactory getFactory() {
@@ -80,10 +83,15 @@ public class DrawPanel extends JPanel implements ActionListener,
     @Override
     public void paint(Graphics g) {
         BufferedImage bi = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
+        this.setFocusable(true);
         Graphics2D g2 = bi.createGraphics();
         g2.setColor(Color.WHITE);
         g2.fillRect(0, 0, this.getWidth(), this.getHeight());
         w.draw((Graphics2D)bi.getGraphics(), sc);
+        for (IModel m : w.getObjects())
+        {
+            animate(m);
+        }
         g.drawImage(bi, 0, 0, null);
     }
 
@@ -99,17 +107,17 @@ public class DrawPanel extends JPanel implements ActionListener,
 
     @Override
     public void mousePressed(MouseEvent e) {
-        int direction = 0;
+        /*int direction = 0;
         if (e.getButton() == MouseEvent.BUTTON1)
             direction = 1;
         else if (e.getButton() == MouseEvent.BUTTON3)
             direction = -1;
-        w.getExternalForce().setValue(10*direction);
+        w.getExternalForce().setValue(10*direction);*/
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        w.getExternalForce().setValue(0);
+        //w.getExternalForce().setValue(0);
     }
 
     @Override
@@ -124,12 +132,12 @@ public class DrawPanel extends JPanel implements ActionListener,
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        w.getExternalForce().setLocation(sc.s2r(new ScreenPoint(e.getX(), e.getY())));
+        //w.getExternalForce().setLocation(sc.s2r(new ScreenPoint(e.getX(), e.getY())));
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        w.getExternalForce().setLocation(sc.s2r(new ScreenPoint(e.getX(), e.getY())));
+        //w.getExternalForce().setLocation(sc.s2r(new ScreenPoint(e.getX(), e.getY())));
     }
 
     private static final double SCALE_STEP = 0.1;
@@ -146,29 +154,48 @@ public class DrawPanel extends JPanel implements ActionListener,
         sc.changeScale(scale);
     }
 
+    public void animate(IModel object) {
+
+        if (isLeft) object.setPosition(object.getPosition().add(new Vector2(-DIR_STEP, 0)));
+        if (isRight) object.setPosition(object.getPosition().add(new Vector2(DIR_STEP, 0)));
+        if (isUp) object.setPosition(object.getPosition().add(new Vector2(0, DIR_STEP)));
+        if (isDown) object.setPosition(object.getPosition().add(new Vector2(0, -DIR_STEP)));
+        this.repaint();
+    }
+
+    private boolean isLeft = false;
+    private boolean isRight = false;
+    private boolean isUp = false;
+    private boolean isDown = false;
+
     @Override
     public void keyTyped(KeyEvent e) {
 
     }
 
+    public void onKeyPressed(KeyEvent e)
+    {
+        if (e.getKeyCode()==KeyEvent.VK_LEFT) isLeft = true;
+        if (e.getKeyCode()==KeyEvent.VK_RIGHT) isRight = true;
+        if (e.getKeyCode()==KeyEvent.VK_UP) isUp = true;
+        if (e.getKeyCode()==KeyEvent.VK_DOWN) isDown = true;
+    }
+
+    public void onKeyReleased(KeyEvent e)
+    {
+        if (e.getKeyCode()==KeyEvent.VK_LEFT) isLeft = false;
+        if (e.getKeyCode()==KeyEvent.VK_RIGHT) isRight = false;
+        if (e.getKeyCode()==KeyEvent.VK_UP) isUp = false;
+        if (e.getKeyCode()==KeyEvent.VK_DOWN) isDown = false;
+    }
+
     @Override
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_PAGE_DOWN)
-        {
-            int direction = 1;
-            w.getExternalForce().setValue(10*direction);
-            w.getExternalForce().setLocation(
-                    sc.s2r(new ScreenPoint(this.getWidth()/2, this.getHeight())));
-        }
-
+        onKeyPressed(e);
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_PAGE_DOWN)
-        {
-            w.getExternalForce().setValue(0);
-        }
-
+        onKeyReleased(e);
     }
 }

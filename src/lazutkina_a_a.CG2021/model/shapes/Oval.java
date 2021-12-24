@@ -20,7 +20,7 @@ public class Oval extends IModel {
         int rh = sc.r2sDistanceH(this.getWidth()/2);
         int rv = sc.r2sDistanceV(this.getHeight()/2);
         g.setColor(this.getColor());
-        g.fillOval(pc.getI() - rh, pc.getJ() - rv, rh + rh, rv + rv);
+        g.fillOval(pc.getI() - rh, pc.getJ() - rv, rh*2, rv*2);
         g.setColor(oldC);
     }
 }

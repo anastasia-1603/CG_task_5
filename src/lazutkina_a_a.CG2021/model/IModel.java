@@ -25,6 +25,10 @@ public abstract class IModel implements IDrawer{
         this.acceleration = new Vector2(0, 0);
     }
 
+    protected IModel(double m, double width, double height, Vector2 position) {
+        this(m, width, height, position, Color.BLACK);
+    }
+
     public Vector2 getAcceleration() {
         return acceleration;
     }
