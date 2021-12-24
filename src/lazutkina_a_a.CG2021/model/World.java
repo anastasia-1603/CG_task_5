@@ -89,9 +89,6 @@ public class World implements IDrawer{
                 obj.draw(g, sc);
             }
         }
-        /*g.drawString(String.format("Mu=%.2f", field.getMu()), 10, 30);
-        g.drawString(String.format("F=%.0f", externalForce.getValue()), 10, 50);*/
-
     }
 
     public void addObject(IModel object)

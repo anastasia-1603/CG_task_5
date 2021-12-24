@@ -11,8 +11,10 @@ import model.World;
 import model.factory.ModelFactory;
 import model.factory.OvalFactory;
 import timers.AbstractWorldTimer;
+
 import javax.swing.JPanel;
 import javax.swing.Timer;
+
 import math.Rectangle;
 import timers.UpdateWorldTimer;
 import utils2d.ScreenConverter;
@@ -25,8 +27,6 @@ public class DrawPanel extends JPanel implements ActionListener,
     private Timer drawTimer;
     private ModelFactory factory;
 
-
-
     public DrawPanel() {
         super();
         Field f = new Field(
@@ -35,7 +35,7 @@ public class DrawPanel extends JPanel implements ActionListener,
         w = new World(f);
 
         this.factory = new OvalFactory();
-        addObject(1, 0.6, 0.6,  f.getRectangle().getCenter(), Color.ORANGE, null);
+        addObject(1, 0.6, 0.6, f.getRectangle().getCenter(), Color.ORANGE, null);
         sc = new ScreenConverter(f.getRectangle(), this.getWidth(), this.getHeight());
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
@@ -47,9 +47,12 @@ public class DrawPanel extends JPanel implements ActionListener,
         drawTimer.start();
     }
 
-    public void addObject(double m, double width, double height, Vector2 position, Color color, File file)
-    {
+    public void addObject(double m, double width, double height, Vector2 position, Color color, File file) {
         w.addObject(factory.createModel(m, width, height, position, color, file));
+    }
+
+    public void clearObjects() {
+        w.getObjects().clear();
     }
 
     public ModelFactory getFactory() {
@@ -60,13 +63,11 @@ public class DrawPanel extends JPanel implements ActionListener,
         this.factory = factory;
     }
 
-    public void setG(double g)
-    {
+    public void setG(double g) {
         this.w.getField().setG(g);
     }
 
-    public void setMu(double mu)
-    {
+    public void setMu(double mu) {
         this.w.getField().setMu(mu);
     }
 
@@ -84,9 +85,8 @@ public class DrawPanel extends JPanel implements ActionListener,
         Graphics2D g2 = bi.createGraphics();
         g2.setColor(Color.WHITE);
         g2.fillRect(0, 0, this.getWidth(), this.getHeight());
-        w.draw((Graphics2D)bi.getGraphics(), sc);
-        for (IModel m : w.getObjects())
-        {
+        w.draw((Graphics2D) bi.getGraphics(), sc);
+        for (IModel m: w.getObjects()) {
             animate(m);
         }
         g.drawImage(bi, 0, 0, null);
@@ -138,6 +138,7 @@ public class DrawPanel extends JPanel implements ActionListener,
     }
 
     private static final double SCALE_STEP = 0.1;
+
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
 
@@ -172,20 +173,18 @@ public class DrawPanel extends JPanel implements ActionListener,
 
     }
 
-    public void onKeyPressed(KeyEvent e)
-    {
-        if (e.getKeyCode()==KeyEvent.VK_LEFT) isLeft = true;
-        if (e.getKeyCode()==KeyEvent.VK_RIGHT) isRight = true;
-        if (e.getKeyCode()==KeyEvent.VK_UP) isUp = true;
-        if (e.getKeyCode()==KeyEvent.VK_DOWN) isDown = true;
+    public void onKeyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_LEFT) isLeft = true;
+        if (e.getKeyCode() == KeyEvent.VK_RIGHT) isRight = true;
+        if (e.getKeyCode() == KeyEvent.VK_UP) isUp = true;
+        if (e.getKeyCode() == KeyEvent.VK_DOWN) isDown = true;
     }
 
-    public void onKeyReleased(KeyEvent e)
-    {
-        if (e.getKeyCode()==KeyEvent.VK_LEFT) isLeft = false;
-        if (e.getKeyCode()==KeyEvent.VK_RIGHT) isRight = false;
-        if (e.getKeyCode()==KeyEvent.VK_UP) isUp = false;
-        if (e.getKeyCode()==KeyEvent.VK_DOWN) isDown = false;
+    public void onKeyReleased(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_LEFT) isLeft = false;
+        if (e.getKeyCode() == KeyEvent.VK_RIGHT) isRight = false;
+        if (e.getKeyCode() == KeyEvent.VK_UP) isUp = false;
+        if (e.getKeyCode() == KeyEvent.VK_DOWN) isDown = false;
     }
 
     @Override
